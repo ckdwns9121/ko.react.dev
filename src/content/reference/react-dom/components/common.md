@@ -255,32 +255,31 @@ title: "공통 컴포넌트 (예: <div>)"
 }}>
 ```
 
-[See an example of using the `ref` callback.](/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback)
+[`ref` 콜백을 사용하는 예를 참조하세요](/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback)
 
-When the `<div>` DOM node is added to the screen, React will call your `ref` callback with the DOM `node` as the argument. When that `<div>` DOM node is removed, React will call your the cleanup function returned from the callback.
+`<div>` DOM 노드가 화면에 추가되면, React는 `ref` 콜백을 호출하면서 해당 DOM `node`를 인자로 전달합니다. `<div>` DOM 노드가 제거되면, React는 그 콜백에서 클린업(cleanup) 함수를 호출합니다.
 
-React will also call your `ref` callback whenever you pass a *different* `ref` callback. In the above example, `(node) => { ... }` is a different function on every render. When your component re-renders, the *previous* function will be called with `null` as the argument, and the *next* function will be called with the DOM node.
+React는 다른 `ref` 콜백을 전달할 때도 `ref` 콜백을 호출합니다. 위의 예시에서 `(node) => { ... }`는 매 렌더마다 새로운 함수이기 때문에, 컴포넌트가 리렌더링되면 이전 함수는 `null`을 인자로 받아 호출되고, 다음 함수는 DOM 노드를 인자로 받아 호출됩니다.
 
-#### Parameters {/*ref-callback-parameters*/}
+#### 매개변수 {/*ref-callback-parameters*/}
 
-* `node`: A DOM node. React will pass you the DOM node when the ref gets attached. Unless you pass the same function reference for the `ref` callback on every render, the callback will get temporarily cleanup and re-create during every re-render of the component.
+* `node`: DOM 노드. ref가 연결될 때 React가 이 DOM 노드를 인자로 전달합니다. 매 렌더마다 같은 함수 참조를 `ref` 콜백에 전달하지 않는다면, 컴포넌트가 리렌더링될 때마다 콜백은 잠시 정리(cleanup)되었다가 다시 생성됩니다.
 
 <Note>
 
-#### React 19 added cleanup functions for `ref` callbacks. {/*react-19-added-cleanup-functions-for-ref-callbacks*/}
+#### React 19에서는 `ref` 콜백에 클린업(cleanup) 함수가 추가되었습니다. {/*react-19-added-cleanup-functions-for-ref-callbacks*/}
 
-To support backwards compatibility, if a cleanup function is not returned from the `ref` callback, `node` will be called with `null` when the `ref` is detached. This behavior will be removed in a future version.
-
+하위 호환성을 위해, `ref` 콜백에서 클린업(cleanup) 함수를 반환하지 않는 경우 `ref`가 분리될 때 `node`가 `null`과 함께 호출됩니다. 이 동작은 향후 버전에서 제거될 예정입니다.
 </Note>
 
-#### Returns {/*returns*/}
+#### 반환값 {/*returns*/}
 
-* **optional** `cleanup function`: When the `ref` is detached, React will call the cleanup function. If a function is not returned by the `ref` callback, React will call the callback again with `null` as the argument when the `ref` gets detached. This behavior will be removed in a future version.
+* **선택적** `cleanup 함수`: `ref`가 분리(detach)될 때 React는 이 정리(cleanup) 함수를 호출합니다. 만약 `ref` 콜백에서 함수를 반환하지 않는다면, `ref`가 분리될 때 React는 콜백을 다시 호출하면서 null을 인자로 전달합니다. 이 동작은 향후 버전에서 제거될 예정입니다.
 
-#### Caveats {/*caveats*/}
+#### 주의 사항 {/*caveats*/}
 
-* When Strict Mode is on, React will **run one extra development-only setup+cleanup cycle** before the first real setup. This is a stress-test that ensures that your cleanup logic "mirrors" your setup logic and that it stops or undoes whatever the setup is doing. If this causes a problem, implement the cleanup function.
-* When you pass a *different* `ref` callback, React will call the *previous* callback's cleanup function if provided. If no cleanup function is defined, the `ref` callback will be called with `null` as the argument. The *next* function will be called with the DOM node.
+* Strict Mode가 켜져 있으면, React는 **첫 실제 설정(setup) 전에 개발 환경에서만 추가로 한 번 더 setup+cleanup 사이클을 실행**합니다. 이는 정리 로직이 설정 로직을 '미러링'하고 설정에서 수행 중인 작업을 중지하거나 취소하는지 확인하기 위한 스트레스 테스트입니다. 만약 이 때문에 문제가 생긴다면 cleanup 함수를 반드시 구현해야 합니다.
+* 다른 `ref` 콜백을 전달하면, React는 *이전 콜백의 cleanup 함수(정의된 경우)*를 호출합니다. cleanup 함수가 정의되어 있지 않다면, React는 해당 `ref` 콜백을 `null` 인자로 다시 호출합니다. 이후에는 *다음 함수*가 DOM 노드를 인자로 받아 호출됩니다.
 
 ---
 
